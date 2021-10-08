@@ -18,8 +18,10 @@ jobs:
       UPLOAD_NAME: macos
       X86_ARCH: x86_64-apple-darwin
       ARM_ARCH: aarch64-apple-darwin
-      X86_DIR: target/x86_64-apple-darwin/debug
-      ARM_DIR: target/aarch64-apple-darwin/debug
+      X86_DEBUG_DIR: target/x86_64-apple-darwin/debug
+      ARM_DEBUG_DIR: target/aarch64-apple-darwin/debug
+      X86_REL_DIR: target/x86_64-apple-darwin/release
+      ARM_REL_DIR: target/aarch64-apple-darwin/release
       BUILD_LIB: libmlua_release_test.dylib
       UNIVERSAL_REL_LIB: mlua_release_test-macos.dylib
       X86_REL_LIB: mlua_release_test-macos-intel.dylib
@@ -39,23 +41,33 @@ jobs:
           toolchain: stable
           target: ${{ env.ARM_ARCH }}
       - uses: Swatinem/rust-cache@v1
-      - name: Build Lua ${{ env.LUA_VERSION }} library (x86_64)
+      - name: Build Lua ${{ env.LUA_VERSION }} debug library (x86_64)
         run: |
           cargo build --no-default-features --features "${{ env.LUA_FEATURE }},vendored" --target ${{ env.X86_ARCH }}
-          ls -l ./${{ env.X86_DIR }}
-          cp ./${{ env.X86_DIR }}/${{ env.BUILD_LIB }} ./${{ env.X86_REL_LIB }}
-          cp ./${{ env.X86_DIR }}/build/mlua-*/out/glue.rs ./x86_glue.rs
-      - name: Build Lua ${{ env.LUA_VERSION }} library (aarch64)
+          ls -l ./${{ env.X86_DEBUG_DIR }}
+          cp ./${{ env.X86_DEBUG_DIR }}/build/mlua-*/out/glue.rs ./x86_debug_glue.rs
+      - name: Build Lua ${{ env.LUA_VERSION }} release library (x86_64)
+        run: |
+          cargo build --release --no-default-features --features "${{ env.LUA_FEATURE }},vendored" --target ${{ env.X86_ARCH }}
+          ls -l ./${{ env.X86_REL_DIR }}
+          cp ./${{ env.X86_REL_DIR }}/${{ env.BUILD_LIB }} ./${{ env.X86_REL_LIB }}
+          cp ./${{ env.X86_REL_DIR }}/build/mlua-*/out/glue.rs ./x86_rel_glue.rs
+      - name: Build Lua ${{ env.LUA_VERSION }} debug library (aarch64)
         run: |
           cargo build --no-default-features --features "${{ env.LUA_FEATURE }},vendored" --target ${{ env.ARM_ARCH }}
-          ls -l ./${{ env.ARM_DIR }}
-          cp ./${{ env.ARM_DIR }}/${{ env.BUILD_LIB }} ./${{ env.ARM_REL_LIB }}
-          cp ./${{ env.ARM_DIR }}/build/mlua-*/out/glue.rs ./arm_glue.rs
+          ls -l ./${{ env.ARM_DEBUG_DIR }}
+          cp ./${{ env.ARM_DEBUG_DIR }}/build/mlua-*/out/glue.rs ./arm_debug_glue.rs
+      - name: Build Lua ${{ env.LUA_VERSION }} release library (aarch64)
+        run: |
+          cargo build --release --no-default-features --features "${{ env.LUA_FEATURE }},vendored" --target ${{ env.ARM_ARCH }}
+          ls -l ./${{ env.ARM_REL_DIR }}
+          cp ./${{ env.ARM_REL_DIR }}/${{ env.BUILD_LIB }} ./${{ env.ARM_REL_LIB }}
+          cp ./${{ env.ARM_REL_DIR }}/build/mlua-*/out/glue.rs ./arm_rel_glue.rs
       - name: Unify libraries
         run: |
           lipo -create -output ${{ env.UNIVERSAL_REL_LIB }} \
-              ./${{ env.X86_DIR }}/${{ env.BUILD_LIB }} \
-              ./${{ env.ARM_DIR }}/${{ env.BUILD_LIB }}
+              ./${{ env.X86_REL_DIR }}/${{ env.BUILD_LIB }} \
+              ./${{ env.ARM_REL_DIR }}/${{ env.BUILD_LIB }}
           chmod +x ./${{ env.UNIVERSAL_REL_LIB }}
       - name: Determine git tag
         if: github.event_name == 'push'
@@ -74,5 +86,7 @@ jobs:
             ./${{ env.UNIVERSAL_REL_LIB }}
             ./${{ env.X86_REL_LIB }}
             ./${{ env.ARM_REL_LIB }}
-            ./x86_glue.rs
-            ./arm_glue.rs
+            ./x86_debug_glue.rs
+            ./x86_rel_glue.rs
+            ./arm_debug_glue.rs
+            ./arm_rel_glue.rs
