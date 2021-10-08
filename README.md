@@ -9,7 +9,7 @@ universal lib is placed into `target/release`.
 Run `make verify` to build the universal `dylib` and attempt to load and run
 it. This uses `lua` on path and defaults to `lua51` feature of mlua. To change
 the lua binary used, set the environment variable `LUA_BIN`. To change the
-feature used to build the module, set the environment variable `LUA_FEATURE`.
+feature used to build the module, set the environment variable `LUA_VERSION`.
 
 The `vendored` feature is applied automatically.
 
