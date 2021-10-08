@@ -13,11 +13,13 @@ LUA_BIN?=lua
 # Defaults to building universal
 all: universal
 
+clean:
+	@rm $(LIB_SO_NAME)
+
 # Verify that the universal library can be loaded
 verify: universal
 	@cp target/release/$(LIB_NAME) $(LIB_SO_NAME)
 	@$(LUA_BIN) -e 'print(require("$(NAME)").msg)'
-	@rm $(LIB_SO_NAME)
 
 # Make a universal dylib
 universal: x86 aarch64
@@ -30,7 +32,6 @@ universal: x86 aarch64
 verify-x86:
 	@cp target/$(X86_ARCH)/release/$(LIB_NAME) $(LIB_SO_NAME)
 	@$(LUA_BIN) -e 'print(require("$(NAME)").msg)'
-	@rm $(LIB_SO_NAME)
 
 # Make an x86_64 dylib
 x86:
@@ -40,7 +41,6 @@ x86:
 verify-aarch64:
 	@cp target/$(ARM_ARCH)/release/$(LIB_NAME) $(LIB_SO_NAME)
 	@$(LUA_BIN) -e 'print(require("$(NAME)").msg)'
-	@rm $(LIB_SO_NAME)
 
 # Make an aarch64 dylib
 aarch64:
