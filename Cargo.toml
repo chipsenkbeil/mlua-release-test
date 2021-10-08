@@ -20,4 +20,4 @@ luajit = ["mlua/luajit"]
 vendored = ["mlua/vendored"]
 
 [dependencies]
-mlua = { version = "0.6.5", features = ["async", "macros", "module", "serialize"] }
+mlua = { git = "https://github.com/khvzak/mlua.git", rev = "ebf296fdd99c6a27658315fe80b828ca9ae83214", features = ["async", "macros", "module", "serialize"] }
