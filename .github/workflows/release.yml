@@ -72,7 +72,7 @@ jobs:
           prerelease: true
           files: |
             ./${{ env.UNIVERSAL_REL_LIB }}
-            ./${{ X86_REL_LIB }}
-            ./${{ ARM_REL_LIB }}
+            ./${{ env.X86_REL_LIB }}
+            ./${{ env.ARM_REL_LIB }}
             ./x86_glue.rs
             ./arm_glue.rs
