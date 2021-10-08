@@ -1,0 +1,3 @@
+/target
+Cargo.lock
+mlua_release_test.so
