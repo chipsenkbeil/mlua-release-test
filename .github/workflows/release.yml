@@ -20,10 +20,10 @@ jobs:
       ARM_ARCH: aarch64-apple-darwin
       X86_DIR: target/x86_64-apple-darwin/debug
       ARM_DIR: target/aarch64-apple-darwin/debug
-      BUILD_LIB: libdistant_lua.dylib
-      UNIVERSAL_REL_LIB: distant_lua-macos.dylib
-      X86_REL_LIB: distant_lua-macos-intel.dylib
-      ARM_REL_LIB: distant_lua-macos-arm.dylib
+      BUILD_LIB: libmlua_release_test.dylib
+      UNIVERSAL_REL_LIB: mlua_release_test-macos.dylib
+      X86_REL_LIB: mlua_release_test-macos-intel.dylib
+      ARM_REL_LIB: mlua_release_test-macos-arm.dylib
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust (x86)
@@ -65,7 +65,7 @@ jobs:
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          name: distant ${{ env.TAG_NAME }}
+          name: mlua release test ${{ env.TAG_NAME }}
           fail_on_unmatched_files: true
           target_commitish: ${{ github.sha }}
           draft: false
